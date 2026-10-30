@@ -27,7 +27,7 @@ func _ready() -> void:
     panel.add_child(box)
 
     box.add_child(_label("DEVELOPMENT STATUS", 32, WHITE))
-    box.add_child(_label("WebRTS Native  •  v0.1", 18, GOLD))
+    box.add_child(_label("Poly Warfront  •  v0.1", 18, GOLD))
     box.add_child(_label("Slice B: game state, navigation and event bus.", 15, MUTED))
     box.add_child(_label("Current phase: " + String(GameState.current_phase()), 15, MUTED))
     box.add_child(_label("Campaign and Skirmish are still in development.", 14, MUTED))

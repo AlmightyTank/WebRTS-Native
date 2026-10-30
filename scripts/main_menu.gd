@@ -65,7 +65,7 @@ func _build_menu() -> void:
     content.add_theme_constant_override("separation", 8)
     panel_padding.add_child(content)
     content.add_child(_make_label("YOUNG PROGRAMING  /  RTS DIVISION", 12, GOLD))
-    content.add_child(_make_label("WEBRTS", 49, WHITE))
+    content.add_child(_make_label("POLY WARFRONT", 49, WHITE))
     content.add_child(_make_label("NATIVE  •  OFFLINE STRATEGY", 15, MUTED))
 
     var spacer := Control.new()
@@ -90,7 +90,7 @@ func _build_menu() -> void:
 
     var exit_button := _make_button("QUIT GAME", true)
     exit_button.name = "ExitButton"
-    exit_button.tooltip_text = "Close WebRTS Native."
+    exit_button.tooltip_text = "Close Poly Warfront."
     exit_button.pressed.connect(_exit_game)
     content.add_child(exit_button)
 

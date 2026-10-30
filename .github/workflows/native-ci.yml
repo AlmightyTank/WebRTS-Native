@@ -4,6 +4,7 @@ on:
   push:
     branches: [main]
   pull_request:
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -64,12 +65,61 @@ jobs:
           godot --headless --path . --quit-after 240 res://tests/options_ui.tscn 2>&1 | tee /tmp/godot-options.log
           grep -q "PASS: native options UI apply discard defaults" /tmp/godot-options.log
           if grep -E "SCRIPT ERROR|Parse Error|Failed loading resource|FAIL:" /tmp/godot-options.log; then exit 1; fi
+      - name: Platform-neutral command contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          godot --headless --path . --quit-after 120 res://tests/command_contract.tscn 2>&1 | tee /tmp/godot-command-contract.log
+          grep -q "PASS: platform-neutral command contract validation" /tmp/godot-command-contract.log
+          if grep -E "SCRIPT ERROR|Parse Error|Failed loading resource|FAIL:" /tmp/godot-command-contract.log; then exit 1; fi
+      - name: Asset and project validation
+        shell: bash
+        run: |
+          set -euo pipefail
+          godot --headless --path . --quit-after 120 res://tests/asset_validation.tscn 2>&1 | tee /tmp/godot-assets.log
+          grep -q "PASS: native asset and project validation" /tmp/godot-assets.log
+          if grep -E "SCRIPT ERROR|Parse Error|Failed loading resource|FAIL:" /tmp/godot-assets.log; then exit 1; fi
+      - name: Android touch smoke scene
+        shell: bash
+        run: |
+          set -euo pipefail
+          godot --headless --path . --quit-after 120 res://tests/android_touch_smoke.tscn 2>&1 | tee /tmp/godot-android-touch.log
+          grep -q "PASS: Android touch smoke scene" /tmp/godot-android-touch.log
+          if grep -E "SCRIPT ERROR|Parse Error|Failed loading resource|FAIL:" /tmp/godot-android-touch.log; then exit 1; fi
+      - name: Battlefield camera and terrain picking
+        shell: bash
+        run: |
+          set -euo pipefail
+          godot --headless --path . --quit-after 120 res://tests/battlefield_picking.tscn 2>&1 | tee /tmp/godot-battlefield-picking.log
+          grep -q "PASS: battlefield camera and terrain picking" /tmp/godot-battlefield-picking.log
+          if grep -E "SCRIPT ERROR|Parse Error|Failed loading resource|FAIL:" /tmp/godot-battlefield-picking.log; then exit 1; fi
+      - name: Battlefield desktop camera controls
+        shell: bash
+        run: |
+          set -euo pipefail
+          godot --headless --path . --quit-after 120 res://tests/battlefield_camera_controls.tscn 2>&1 | tee /tmp/godot-battlefield-camera.log
+          grep -q "PASS: battlefield desktop camera controls" /tmp/godot-battlefield-camera.log
+          if grep -E "SCRIPT ERROR|Parse Error|Failed loading resource|FAIL:" /tmp/godot-battlefield-camera.log; then exit 1; fi
+      - name: Battlefield touch camera controls
+        shell: bash
+        run: |
+          set -euo pipefail
+          godot --headless --path . --quit-after 120 res://tests/battlefield_touch_camera.tscn 2>&1 | tee /tmp/godot-battlefield-touch.log
+          grep -q "PASS: battlefield touch pan and pinch zoom" /tmp/godot-battlefield-touch.log
+          if grep -E "SCRIPT ERROR|Parse Error|Failed loading resource|FAIL:" /tmp/godot-battlefield-touch.log; then exit 1; fi
       - name: Normal game startup smoke
         shell: bash
         run: |
           set -euo pipefail
           godot --headless --path . --quit-after 10 2>&1 | tee /tmp/godot-boot.log
           if grep -E "SCRIPT ERROR|Parse Error|Failed loading resource" /tmp/godot-boot.log; then exit 1; fi
+      - name: Upload Linux validation logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: native-linux-validation-logs
+          path: /tmp/godot-*.log
+          if-no-files-found: ignore
 
   windows-smoke:
     name: Windows editor startup and menu smoke
@@ -94,6 +144,19 @@ jobs:
         run: |
           & $env:GODOT_EXE --headless --editor --path . --import --quit
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Install Windows export templates
+        shell: pwsh
+        run: |
+          $ProgressPreference = 'SilentlyContinue'
+          $archive = Join-Path $env:RUNNER_TEMP 'godot-templates.zip'
+          $unpack = Join-Path $env:RUNNER_TEMP 'godot-templates'
+          Invoke-WebRequest -Uri 'https://github.com/godotengine/godot/releases/download/4.7.2-stable/Godot_v4.7.2-stable_export_templates.tpz' -OutFile $archive
+          Expand-Archive -Path $archive -DestinationPath $unpack -Force
+          $templateRoot = Join-Path $env:APPDATA 'Godot\export_templates\4.7.2.stable'
+          New-Item -ItemType Directory -Force -Path $templateRoot | Out-Null
+          $source = Join-Path $unpack 'templates'
+          if (-not (Test-Path $source)) { $source = $unpack }
+          Copy-Item -Path (Join-Path $source '*') -Destination $templateRoot -Recurse -Force
       - name: Windows scene and interaction smoke
         shell: pwsh
         run: |
@@ -134,3 +197,101 @@ jobs:
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           if ($output | Select-String -Pattern 'SCRIPT ERROR|Parse Error|Failed loading resource|FAIL:') { exit 1 }
           if (-not ($output | Select-String -Pattern 'PASS: native options UI apply discard defaults')) { exit 1 }
+      - name: Windows command contract and asset validation
+        shell: pwsh
+        run: |
+          $output = & $env:GODOT_EXE --headless --path . --quit-after 180 res://tests/command_contract.tscn 2>&1
+          $output | Out-String | Write-Output
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          if ($output | Select-String -Pattern 'SCRIPT ERROR|Parse Error|Failed loading resource|FAIL:') { exit 1 }
+          if (-not ($output | Select-String -Pattern 'PASS: platform-neutral command contract validation')) { exit 1 }
+          $output = & $env:GODOT_EXE --headless --path . --quit-after 180 res://tests/asset_validation.tscn 2>&1
+          $output | Out-String | Write-Output
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          if ($output | Select-String -Pattern 'SCRIPT ERROR|Parse Error|Failed loading resource|FAIL:') { exit 1 }
+          if (-not ($output | Select-String -Pattern 'PASS: native asset and project validation')) { exit 1 }
+      - name: Windows export build check
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path build | Out-Null
+          $portableExe = 'build/Poly-Warfront-v0.1.0-windows-x86_64.exe'
+          & $env:GODOT_EXE --headless --path . --export-release 'Windows Desktop' $portableExe
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          if (-not (Test-Path $portableExe)) { throw 'Windows export was not produced' }
+          if ((Get-Item $portableExe).Length -lt 100000) { throw 'Windows export is unexpectedly small' }
+          $smoke = & $portableExe --headless --quit-after 30 2>&1
+          $smoke | Out-String | Write-Output
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          if ($smoke | Select-String -Pattern 'SCRIPT ERROR|Parse Error|Failed loading resource|ERROR:') { exit 1 }
+          $archive = 'build/Poly-Warfront-v0.1.0-windows-x86_64-portable.zip'
+          Compress-Archive -Path $portableExe -DestinationPath $archive -CompressionLevel Optimal -Force
+          if (-not (Test-Path $archive)) { throw 'Portable Windows archive was not produced' }
+          if ((Get-Item $archive).Length -lt 100000) { throw 'Portable Windows archive is unexpectedly small' }
+      - name: Upload versioned portable Windows build
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: native-windows-v0.1.0-portable
+          path: |
+            build/Poly-Warfront-v0.1.0-windows-x86_64.exe
+            build/Poly-Warfront-v0.1.0-windows-x86_64-portable.zip
+            ${{ runner.temp }}/**/*.log
+          if-no-files-found: ignore
+
+  android-debug-export:
+    name: Android debug export and touch smoke
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: android-actions/setup-android@v3
+      - name: Install Android SDK components
+        shell: bash
+        run: |
+          set -euo pipefail
+          sdkmanager "platform-tools" "platforms;android-35" "build-tools;35.0.0"
+          yes | sdkmanager --licenses >/dev/null || true
+      - name: Install pinned Godot 4.7.2 and export templates
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl -fL --retry 3 -o /tmp/godot.zip "https://github.com/godotengine/godot/releases/download/4.7.2-stable/Godot_v4.7.2-stable_linux.x86_64.zip"
+          unzip -q /tmp/godot.zip -d /tmp/godot
+          sudo install -m 0755 /tmp/godot/Godot_v4.7.2-stable_linux.x86_64 /usr/local/bin/godot
+          mkdir -p "$HOME/.local/share/godot/export_templates/4.7.2.stable" /tmp/godot-templates
+          curl -fL --retry 3 -o /tmp/godot-templates.zip "https://github.com/godotengine/godot/releases/download/4.7.2-stable/Godot_v4.7.2-stable_export_templates.tpz"
+          unzip -q /tmp/godot-templates.zip -d /tmp/godot-templates
+          if [ -d /tmp/godot-templates/templates ]; then
+            cp -R /tmp/godot-templates/templates/. "$HOME/.local/share/godot/export_templates/4.7.2.stable/"
+          else
+            cp -R /tmp/godot-templates/. "$HOME/.local/share/godot/export_templates/4.7.2.stable/"
+          fi
+          godot --version
+      - name: Import and run Android touch smoke
+        shell: bash
+        run: |
+          set -euo pipefail
+          godot --headless --editor --path . --import --quit 2>&1 | tee /tmp/godot-android-import.log
+          godot --headless --path . --quit-after 120 res://tests/android_touch_smoke.tscn 2>&1 | tee /tmp/godot-android-touch.log
+          grep -q "PASS: Android touch smoke scene" /tmp/godot-android-touch.log
+          if grep -E "SCRIPT ERROR|Parse Error|Failed loading resource|FAIL:" /tmp/godot-android-import.log /tmp/godot-android-touch.log; then exit 1; fi
+      - name: Export Android debug APK
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p build
+          godot --headless --path . --export-debug "Android Debug" build/Poly-Warfront-v0.1.0-debug.apk 2>&1 | tee /tmp/godot-android-export.log
+          test -s build/Poly-Warfront-v0.1.0-debug.apk
+      - name: Upload Android debug APK and logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: native-android-v0.1.0-debug
+          path: |
+            build/Poly-Warfront-v0.1.0-debug.apk
+            /tmp/godot-android-*.log
+          if-no-files-found: ignore

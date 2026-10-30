@@ -68,7 +68,7 @@ func _ready() -> void:
             box.add_child(_label("PROJECT / TEAM", 12, GOLD))
             box.add_child(_label(heading, 29, WHITE))
             box.add_child(_label("A Young Programing project", 19, GOLD))
-            box.add_child(_label("WebRTS Native — original standalone strategy game.", 16, MUTED))
+            box.add_child(_label("Poly Warfront — original standalone strategy game.", 16, MUTED))
             box.add_child(_label("Built with the open-source Godot Engine.", 16, MUTED))
             box.add_child(_label("Full contributors, artists and licenses will be credited as assets are added.", 14, MUTED))
         _:

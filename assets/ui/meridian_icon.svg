@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256">
+  <title>Poly Warfront native icon</title>
+  <rect width="256" height="256" rx="44" fill="#071521"/>
+  <path d="M128 22 220 75v106l-92 53-92-53V75z" fill="#102d3b" stroke="#5bd6c8" stroke-width="8"/>
+  <path d="m128 52 60 35v70l-60 35-60-35V87z" fill="#164656" stroke="#d2b45d" stroke-width="6"/>
+  <path d="M128 70v114M82 97l46 26 46-26M82 159l46-26 46 26" fill="none" stroke="#e8f4e7" stroke-width="7" stroke-linejoin="round"/>
+  <circle cx="128" cy="123" r="12" fill="#f2c96d"/>
+</svg>

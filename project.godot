@@ -1,9 +1,11 @@
-; WebRTS Native / pinned to Godot 4.7.2
+; Poly Warfront / pinned to Godot 4.7.2
 ; This native project is intentionally independent from the Phaser browser prototype.
 config_version=5
 
 [application]
-config/name="WebRTS Native"
+config/name="Poly Warfront"
+config/version="0.1.0"
+config/icon="res://assets/ui/meridian_icon.svg"
 run/main_scene="res://scenes/AppRoot.tscn"
 config/features=PackedStringArray("4.7", "GL Compatibility")
 
@@ -17,10 +19,34 @@ SceneRouter="*res://core/scene_router.gd"
 window/size/viewport_width=1280
 window/size/viewport_height=720
 window/stretch/mode="canvas_items"
+window/size/resizable=true
 window/handheld/orientation=0
 
 [input_devices]
 pointing/emulate_mouse_from_touch=true
+
+[input]
+
+battlefield_pan_up={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"physical_keycode":87,"unicode":119)]
+}
+battlefield_pan_down={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"physical_keycode":83,"unicode":115)]
+}
+battlefield_pan_left={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"physical_keycode":65,"unicode":97)]
+}
+battlefield_pan_right={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"physical_keycode":68,"unicode":100)]
+}
+battlefield_reset_camera={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"physical_keycode":4194323)]
+}
 
 [rendering]
 renderer/rendering_method="gl_compatibility"

@@ -1,8 +1,8 @@
-# WebRTS Native — Complete Offline Game 1.0 Master Roadmap
+# Poly Warfront — Complete Offline Game 1.0 Master Roadmap
 
 **Status:** Planning only — **0 / 132 native slices accepted**. The separate browser/Phaser track has completed v0.2 A–H, but those slices are NOT native-game completion.
 **Authority:** This is the authoritative native-game specification in this repository. The separate browser prototype roadmap remains at [WebRTS](https://github.com/AlmightyTank/WebRTS/blob/main/docs/ROADMAP-1.0-DESKTOP-MOBILE.md).
-**Working title:** WebRTS Native (final marketable title unconfirmed).
+**Working title:** Poly Warfront.
 **Product:** Standalone, fully offline single-player real-time strategy game for Windows and Android; original 3D low-poly visuals under an angled classic-RTS camera; integrated native game menus and HUD; no browser, website, VPS or internet connection required for normal play.
 **Engine:** Godot 4 stable, GDScript, reusable scene/data architecture; pin specific stable engine/export-template version in Slice v0.1-A before first verified build. Native Godot project at this repository root; preserve the separate Phaser browser prototype and tests untouched.
 
