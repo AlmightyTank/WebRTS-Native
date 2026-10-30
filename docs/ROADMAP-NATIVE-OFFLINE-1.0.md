@@ -4,7 +4,7 @@
 **Authority:** This is the authoritative native-game specification in this repository. The separate browser prototype roadmap remains at [WebRTS](https://github.com/AlmightyTank/WebRTS/blob/main/docs/ROADMAP-1.0-DESKTOP-MOBILE.md).
 **Working title:** WebRTS Native (final marketable title unconfirmed).
 **Product:** Standalone, fully offline single-player real-time strategy game for Windows and Android; original 3D low-poly visuals under an angled classic-RTS camera; integrated native game menus and HUD; no browser, website, VPS or internet connection required for normal play.
-**Engine:** Godot 4 stable, GDScript, reusable scene/data architecture; pin specific stable engine/export-template version in Slice v0.1-A before first verified build. Separate `native/` project; preserve existing Phaser prototype and tests untouched.
+**Engine:** Godot 4 stable, GDScript, reusable scene/data architecture; pin specific stable engine/export-template version in Slice v0.1-A before first verified build. Native Godot project at this repository root; preserve the separate Phaser browser prototype and tests untouched.
 
 ## Full 1.0 scope
 - Two distinctly playable original factions: **Iron Collective** (durability/armor/fortification) and **Vanguard League** (speed/precision/recon).
@@ -61,7 +61,7 @@
 
 ### v0.1 — Native foundation and runnable application
 
-- [ ] **A — Native project bootstrap:** Add isolated `native/` Godot project (main scene, bootstrap, original placeholder theme), without changing the working web build; run a headless import smoke test.
+- [ ] **A — Native project bootstrap:** Add the native Godot project at this repository root (main scene, bootstrap and placeholder theme); leave the separate working web build untouched; run a headless import smoke test.
 - [ ] **B — Scene architecture:** Establish game-state service, navigation stack, event bus, asset folders and scene conventions; test navigation lifecycle.
 - [ ] **C — Main menu:** Play, Campaign, Skirmish, Load, Options, Credits, Quit; disable unfinished destinations explicitly; prove keyboard, mouse and touch navigation.
 - [ ] **D — Settings persistence:** Resolution/windowed/fullscreen, UI scaling, sound groups and quality presets saved locally with schema-safe defaults.
