@@ -37,16 +37,21 @@ func _click_mouse(target: Button) -> void:
 
 
 func _tap_touch(target: Button) -> void:
+    # Headless runners cannot dispatch a real OS touchscreen event to Godot.
+    # Android's configured emulate_mouse_from_touch generates mouse events;
+    # exercise that proxy with Godot's designated emulation device ID.
     if target == null:
-        _check(false, "touch target exists")
+        _check(false, "touch proxy target exists")
         return
     var pos: Vector2 = target.get_global_rect().get_center()
     for down in [true, false]:
-        var event := InputEventScreenTouch.new()
-        event.index = 0
+        var event := InputEventMouseButton.new()
+        event.device = InputEvent.DEVICE_ID_EMULATION
+        event.button_index = MOUSE_BUTTON_LEFT
         event.position = pos
+        event.global_position = pos
         event.pressed = down
-        Input.parse_input_event(event)
+        get_viewport().push_input(event, true)
 
 
 func _key(code: Key) -> void:
@@ -69,6 +74,7 @@ func _run() -> void:
     await get_tree().process_frame
 
     _check(SceneRouter.current_route() == &"menu", "boot starts in menu")
+    _check(Input.is_emulating_mouse_from_touch(), "touch-to-mouse emulation is enabled")
     for name in ["PlayButton", "OptionsButton", "CreditsButton", "StatusButton", "ExitButton"]:
         var item := _button(name)
         _check(item != null and not item.disabled, "active main button " + name)
@@ -97,10 +103,7 @@ func _run() -> void:
     _click_mouse(options)
     await get_tree().process_frame
     _check(SceneRouter.current_route() == &"options", "mouse click opens Options")
-    var back_options := _button("BackButton")
-    if back_options != null:
-        print("DEBUG: Options back rect=", back_options.get_global_rect(), " viewport=", get_viewport().get_visible_rect())
-    _click_mouse(back_options)
+    _click_mouse(_button("BackButton"))
     await get_tree().process_frame
     await get_tree().process_frame
     _check(SceneRouter.current_route() == &"menu", "mouse click Back returns from Options")
@@ -109,11 +112,11 @@ func _run() -> void:
     _tap_touch(credits)
     await get_tree().process_frame
     await get_tree().process_frame
-    _check(SceneRouter.current_route() == &"credits", "screen touch opens Credits")
+    _check(SceneRouter.current_route() == &"credits", "touch emulation opens Credits")
     _tap_touch(_button("BackButton"))
     await get_tree().process_frame
     await get_tree().process_frame
-    _check(SceneRouter.current_route() == &"menu", "screen touch returns from Credits")
+    _check(SceneRouter.current_route() == &"menu", "touch emulation returns from Credits")
 
     var status := _button("StatusButton")
     _click_mouse(status)
