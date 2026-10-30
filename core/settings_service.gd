@@ -86,20 +86,39 @@ func update_many(candidate: Dictionary) -> bool:
 
 
 func reload() -> bool:
-    _values = defaults()
+    # A validated prior save is recoverable if an interrupted write or a
+    # damaged/unknown-version current file cannot be read.
+    var values: Dictionary = _read_settings(_storage_path)
+    var recovered: bool = false
+    if values.is_empty():
+        values = _read_settings(_storage_path + ".bak")
+        recovered = not values.is_empty()
+
+    if values.is_empty():
+        _values = defaults()
+        settings_changed.emit(snapshot())
+        return false
+
+    _values = values
+    if recovered:
+        push_warning("SettingsService: recovered preferences from backup")
+    settings_changed.emit(snapshot())
+    return true
+
+
+func _read_settings(path: String) -> Dictionary:
     var config := ConfigFile.new()
-    if config.load(_storage_path) != OK:
-        settings_changed.emit(snapshot())
-        return false
+    if config.load(path) != OK:
+        return {}
     if config.get_value("meta", "schema_version", -1) != SCHEMA_VERSION:
-        settings_changed.emit(snapshot())
-        return false
+        return {}
+
+    var values: Dictionary = defaults()
     for key in DEFAULTS.keys():
         var value: Variant = config.get_value("preferences", key, DEFAULTS[key])
         if _valid(key, value):
-            _values[key] = value
-    settings_changed.emit(snapshot())
-    return true
+            values[key] = value
+    return values
 
 
 func save() -> bool:
