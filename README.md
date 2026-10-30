@@ -19,6 +19,8 @@ godot --headless --editor --path . --import --quit
 godot --headless --path . res://tests/smoke.tscn
 godot --headless --path . res://tests/architecture.tscn
 godot --headless --path . res://tests/menu_input.tscn
+godot --headless --path . res://tests/settings.tscn
+godot --headless --path . res://tests/options_ui.tscn
 godot --headless --path . --quit-after 10
 ```
 

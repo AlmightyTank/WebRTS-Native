@@ -47,9 +47,7 @@ func storage_path() -> String:
 
 func set_storage_path_for_testing(path: String) -> bool:
     # A test-only hook; production settings always use user://settings.cfg.
-    if not OS.has_feature("editor") and not OS.has_feature("debug"):
-        return false
-    if not path.begins_with("user://"):
+    if not path.begins_with("user://test_"):
         return false
     _storage_path = path
     return true
