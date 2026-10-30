@@ -13,7 +13,7 @@ Make Options a functioning offline native preferences page, not a static mock.
 - [x] Apply & Save, Restore Defaults as draft, Back discards unsaved preferences.
 - [x] Android locks desktop-only display/resolution controls and uses device window configuration.
 - [x] CI tests planned for defaults, malformed data, version mismatch, persistence, backup, menu integration.
-- [ ] Windows and Linux CI verified green for current branch.
+- [x] Windows and Linux CI verified green ([run 41000544979](https://github.com/AlmightyTank/WebRTS-Native/actions/runs/41000544979): headless import, menu/input, settings save/reload, corrupt schema and Options screen tests).
 - [ ] Manual visible Windows inspection and Android device verification complete.
 - [ ] Slice D merged into main.
 
