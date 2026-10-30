@@ -8,7 +8,7 @@
 - [x] Native main menu integrates through navigation events; incomplete game modes remain disabled.
 - [x] Local asset directory layout and conventions documented.
 - [x] Headless state/navigation/lifecycle regression tests and UI smoke test added.
-- [ ] Latest branch CI passed on Windows and Linux.
+- [x] Latest branch CI passed on Windows and Linux ([run 40998986477](https://github.com/AlmightyTank/WebRTS-Native/actions/runs/40998986477): menu smoke, architecture regression, and startup passed on both).
 - [ ] Manual visual boot/navigation/back and exit verified on Windows.
 - [ ] Slice B merged into main after acceptance gates.
 
