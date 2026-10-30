@@ -5,14 +5,14 @@ Make Options a functioning offline native preferences page, not a static mock.
 
 ## Implementation
 - [x] Versioned ConfigFile (`user://settings.cfg`) with schema validation and safe defaults.
-- [x] Staged write and previous-file backup; unknown/corrupt versions never crash startup.
+- [x] Staged write and previous-file backup; corrupted/unsupported primary settings recover from a valid backup, otherwise use safe defaults.
 - [x] Display mode (windowed/fullscreen) and three supported window resolutions on desktop.
 - [x] Real 3D viewport MSAA quality presets (off/2x/4x).
 - [x] Root viewport UI scale (85/100/115/130/150%).
 - [x] Runtime Master/Music/SFX/UI audio buses with individual 0–100 volume and mute at zero.
 - [x] Apply & Save, Restore Defaults as draft, Back discards unsaved preferences.
 - [x] Android locks desktop-only display/resolution controls and uses device window configuration.
-- [x] CI tests planned for defaults, malformed data, version mismatch, persistence, backup, menu integration.
+- [x] CI tests for defaults, malformed data, version mismatch, persistence, valid-backup recovery, both-files-corrupt fallback, and menu integration.
 - [x] Windows and Linux CI verified green ([run 41000544979](https://github.com/AlmightyTank/WebRTS-Native/actions/runs/41000544979): headless import, menu/input, settings save/reload, corrupt schema and Options screen tests).
 - [ ] Manual visible Windows inspection and Android device verification complete.
 - [ ] Slice D merged into main.
@@ -28,3 +28,6 @@ Make Options a functioning offline native preferences page, not a static mock.
 
 ## Limitations
 Current game has no 3D combat scene and no composed music/SFX playback yet. Quality and volume bus settings are applied at the engine level, but their visual/audio effects cannot be fully judged until content exists. Android export and physical-device validation are later slices.
+
+## Backup recovery
+When `settings.cfg` cannot be read or has an unsupported schema, the service attempts to load its validated `.bak` file. If neither is usable, settings safely reset in memory to defaults. Backup recovery is not a full guarantee of power-loss atomicity on all filesystems; a future in-game warning may help communicate when defaults were restored.
