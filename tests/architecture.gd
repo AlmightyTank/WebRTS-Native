@@ -82,14 +82,14 @@ func _run_tests() -> void:
     root.queue_free()
     # Process pending frees and exit notifications before checking detached state.
     await get_tree().process_frame
-    await process_frame
+    await get_tree().process_frame
     _check(SceneRouter.current_route() == &"", "disposed AppRoot clears route history")
     _check(SceneRouter.current_screen() == null, "disposed AppRoot clears screen pointer")
     _check(not SceneRouter.navigate(&"status"), "cannot navigate without host")
 
     # Reattach fresh root (e.g., later title/restart flow).
     var next_root := main_scene.instantiate()
-    get_root().add_child(next_root)
+    get_tree().root.add_child(next_root)
     _check(SceneRouter.current_route() == &"menu", "fresh root can attach")
     _check(SceneRouter.get_history().size() == 1, "fresh root has clean history")
 
