@@ -35,12 +35,17 @@ func _build() -> void:
     for side in ["left", "right", "top", "bottom"]:
         margin.add_theme_constant_override("margin_" + side, 12)
 
+    var layout := VBoxContainer.new()
+    layout.name = "OptionsLayout"
+    layout.size_flags_vertical = Control.SIZE_EXPAND_FILL
+    margin.add_child(layout)
+
     var scroll := ScrollContainer.new()
     scroll.name = "OptionsScroller"
     scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
     scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
     scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-    margin.add_child(scroll)
+    layout.add_child(scroll)
 
     var panel := PanelContainer.new()
     panel.name = "OptionsPanel"
@@ -88,30 +93,42 @@ func _build() -> void:
         resolution.disabled = true
         box.add_child(_label("Display mode and resolution follow your mobile device.", 13, MUTED))
 
+    # Keep the actions visible even when the form needs vertical scrolling.
+    var footer := VBoxContainer.new()
+    footer.name = "OptionsFooter"
+    footer.add_theme_constant_override("separation", 6)
+    layout.add_child(footer)
+
     _notice = _label("Changes are not saved until Apply.", 13, MUTED)
     _notice.name = "NoticeLabel"
-    box.add_child(_notice)
+    footer.add_child(_notice)
+
+    var actions := HFlowContainer.new()
+    actions.name = "OptionsActions"
+    actions.add_theme_constant_override("h_separation", 8)
+    actions.add_theme_constant_override("v_separation", 6)
+    footer.add_child(actions)
 
     var apply_button := Button.new()
     apply_button.name = "ApplyButton"
     apply_button.text = "APPLY & SAVE"
-    apply_button.custom_minimum_size.y = 52
+    apply_button.custom_minimum_size = Vector2(145, 50)
     apply_button.pressed.connect(_apply_changes)
-    box.add_child(apply_button)
+    actions.add_child(apply_button)
 
     var reset_button := Button.new()
     reset_button.name = "ResetButton"
     reset_button.text = "RESTORE DEFAULTS"
-    reset_button.custom_minimum_size.y = 52
+    reset_button.custom_minimum_size = Vector2(145, 50)
     reset_button.pressed.connect(_reset_draft)
-    box.add_child(reset_button)
+    actions.add_child(reset_button)
 
     var back_button := Button.new()
     back_button.name = "BackButton"
     back_button.text = "BACK  •  DISCARD UNSAVED"
-    back_button.custom_minimum_size.y = 52
+    back_button.custom_minimum_size = Vector2(175, 50)
     back_button.pressed.connect(_back)
-    box.add_child(back_button)
+    actions.add_child(back_button)
 
 
 func _add_choice(box: VBoxContainer, key: String, title: String,
