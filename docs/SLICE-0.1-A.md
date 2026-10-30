@@ -8,7 +8,7 @@ Create the root Godot 4.7.2 project, actual native main-menu game scene, version
 - [x] Native main menu scene and responsive layout implemented.
 - [x] Pinned engine version and GitHub Actions workflow written.
 - [x] Headless menu smoke test implemented.
-- [ ] Native CI proves import, script parsing, scene startup and UI smoke pass on GitHub.
+- [x] Native CI proves import, script parsing, scene startup and UI smoke pass on GitHub (Linux and Windows headless jobs passed: [run 40993074632](https://github.com/AlmightyTank/WebRTS-Native/actions/runs/40993074632)).
 - [ ] Windows physical/desktop editor launch manually verified.
 - [ ] Slice A merged to `main` after all required gates.
 
