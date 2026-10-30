@@ -76,18 +76,28 @@ func _run() -> void:
     _check(SettingsService.get_setting("music_volume") == defaults["music_volume"], "invalid music uses default")
     _check(SettingsService.get_setting("quality") == "high", "good fields survive partial corruption")
 
+    # An invalid primary file should recover from the previous valid save.
     tampered.set_value("meta", "schema_version", 999)
-    _check(tampered.save(TEST_FILE) == OK, "simulate unsupported schema")
-    _check(not SettingsService.reload(), "future schema rejected")
-    _check(SettingsService.snapshot() == defaults, "unsupported schema uses defaults")
+    _check(tampered.save(TEST_FILE) == OK, "simulate unsupported primary schema")
+    _check(SettingsService.reload(), "recover unsupported primary version from backup")
+    _check(SettingsService.snapshot() == changes, "version mismatch recovers prior settings")
 
     var file := FileAccess.open(TEST_FILE, FileAccess.WRITE)
-    _check(file != null, "corrupt file opened")
+    _check(file != null, "corrupt primary file opened")
     if file != null:
         file.store_string("definitely not valid config")
         file.close()
-    _check(not SettingsService.reload(), "malformed text rejected without crashing")
-    _check(SettingsService.snapshot() == defaults, "malformed file uses defaults")
+    _check(SettingsService.reload(), "recover unreadable primary from backup")
+    _check(SettingsService.snapshot() == changes, "unreadable primary restores prior valid snapshot")
+
+    # No usable primary or backup must fail safely to defaults.
+    var backup_file := FileAccess.open(TEST_FILE + ".bak", FileAccess.WRITE)
+    _check(backup_file != null, "corrupt backup file opened")
+    if backup_file != null:
+        backup_file.store_string("definitely not valid config")
+        backup_file.close()
+    _check(not SettingsService.reload(), "both corrupt files return safe defaults")
+    _check(SettingsService.snapshot() == defaults, "both corrupt files use safe defaults")
 
     SettingsService.restore_production_storage_path()
     SettingsService.reset_defaults()
