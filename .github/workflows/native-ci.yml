@@ -33,9 +33,16 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          godot --headless --path . --script res://tests/smoke.gd 2>&1 | tee /tmp/godot-smoke.log
+          godot --headless --path . --quit-after 180 res://tests/smoke.tscn 2>&1 | tee /tmp/godot-smoke.log
           grep -q "PASS: native Godot main menu boot" /tmp/godot-smoke.log
           if grep -E "SCRIPT ERROR|Parse Error|Failed loading resource" /tmp/godot-smoke.log; then exit 1; fi
+      - name: Scene navigation and state lifecycle tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          godot --headless --path . --quit-after 180 res://tests/architecture.tscn 2>&1 | tee /tmp/godot-architecture.log
+          grep -q "PASS: architecture navigation state lifecycle" /tmp/godot-architecture.log
+          if grep -E "SCRIPT ERROR|Parse Error|Failed loading resource" /tmp/godot-architecture.log; then exit 1; fi
       - name: Normal game startup smoke
         shell: bash
         run: |
@@ -69,5 +76,16 @@ jobs:
       - name: Windows scene and interaction smoke
         shell: pwsh
         run: |
-          & $env:GODOT_EXE --headless --path . --script res://tests/smoke.gd
+          $output = & $env:GODOT_EXE --headless --path . --quit-after 180 res://tests/smoke.tscn 2>&1
+          $output | Out-String | Write-Output
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          if ($output | Select-String -Pattern 'SCRIPT ERROR|Parse Error|Failed loading resource') { exit 1 }
+          if (-not ($output | Select-String -Pattern 'PASS: native Godot main menu boot')) { exit 1 }
+      - name: Windows architecture lifecycle tests
+        shell: pwsh
+        run: |
+          $output = & $env:GODOT_EXE --headless --path . --quit-after 180 res://tests/architecture.tscn 2>&1
+          $output | Out-String | Write-Output
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          if ($output | Select-String -Pattern 'SCRIPT ERROR|Parse Error|Failed loading resource') { exit 1 }
+          if (-not ($output | Select-String -Pattern 'PASS: architecture navigation state lifecycle')) { exit 1 }

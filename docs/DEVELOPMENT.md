@@ -9,19 +9,22 @@
 1. Install Godot 4.7.2 and clone this repository.
 2. Open `project.godot` in the Godot editor.
 3. Press **F5** to launch the game window.
-4. Click **DEVELOPMENT STATUS** to verify that the menu responds; gameplay options are deliberately disabled.
+4. Click **DEVELOPMENT STATUS** to navigate to the second screen, then **BACK TO MAIN MENU**. Gameplay options are deliberately disabled.
 
 ## Headless validation
 ```sh
 godot --headless --editor --path . --import --quit
-godot --headless --path . --script res://tests/smoke.gd
+godot --headless --path . res://tests/smoke.tscn
+godot --headless --path . res://tests/architecture.tscn
 godot --headless --path . --quit-after 10
 ```
 
 Native CI performs all three with the same pinned engine version. These are bootstrap tests, **not** proof of Windows installer quality, Android hardware compatibility or a full 3D gameplay loop.
 
 ## Repository layout
-- `project.godot` — application settings and entry scene.
+- `project.godot` — application settings, autoloads and entry scene.
+- `core/` — game state, navigation and event bus services.
+- `assets/` — local original resources, organized by asset type.
 - `scenes/` — native Godot scenes.
 - `scripts/` — native UI and eventual game systems.
 - `tests/` — headless checks.
