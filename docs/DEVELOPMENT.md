@@ -9,13 +9,15 @@
 1. Install Godot 4.7.2 and clone this repository.
 2. Open `project.godot` in the Godot editor.
 3. Press **F5** to launch the game window.
-4. Navigate with mouse, Tab/Shift+Tab and Enter, or touch. Play opens a mode selector; Options, Credits, and Development Status have working Back buttons. Campaign, Skirmish, and Load are deliberately disabled until implemented.
+4. Navigate with mouse, Tab/Shift+Tab and Enter, or touch. Play opens a mode selector; Options saves native preferences, while Credits and Development Status have working Back buttons. Campaign, Skirmish, and Load are deliberately disabled until implemented.
 
 ## Headless validation
 ```sh
 godot --headless --editor --path . --import --quit
 godot --headless --path . res://tests/smoke.tscn
 godot --headless --path . res://tests/architecture.tscn
+godot --headless --path . res://tests/settings.tscn
+godot --headless --path . res://tests/options_ui.tscn
 godot --headless --path . --quit-after 10
 ```
 

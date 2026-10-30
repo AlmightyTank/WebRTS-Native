@@ -50,6 +50,20 @@ jobs:
           godot --headless --path . --quit-after 240 res://tests/menu_input.tscn 2>&1 | tee /tmp/godot-menu-input.log
           grep -q "PASS: native main menu keyboard mouse touch input" /tmp/godot-menu-input.log
           if grep -E "SCRIPT ERROR|Parse Error|Failed loading resource|FAIL:" /tmp/godot-menu-input.log; then exit 1; fi
+      - name: Settings storage and corrupt file regression
+        shell: bash
+        run: |
+          set -euo pipefail
+          godot --headless --path . --quit-after 240 res://tests/settings.tscn 2>&1 | tee /tmp/godot-settings.log
+          grep -q "PASS: native settings versioned save reload validation" /tmp/godot-settings.log
+          if grep -E "SCRIPT ERROR|Parse Error|Failed loading resource|FAIL:" /tmp/godot-settings.log; then exit 1; fi
+      - name: Options UI apply discard and reset
+        shell: bash
+        run: |
+          set -euo pipefail
+          godot --headless --path . --quit-after 240 res://tests/options_ui.tscn 2>&1 | tee /tmp/godot-options.log
+          grep -q "PASS: native options UI apply discard defaults" /tmp/godot-options.log
+          if grep -E "SCRIPT ERROR|Parse Error|Failed loading resource|FAIL:" /tmp/godot-options.log; then exit 1; fi
       - name: Normal game startup smoke
         shell: bash
         run: |
@@ -104,3 +118,19 @@ jobs:
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           if ($output | Select-String -Pattern 'SCRIPT ERROR|Parse Error|Failed loading resource') { exit 1 }
           if (-not ($output | Select-String -Pattern 'PASS: architecture navigation state lifecycle')) { exit 1 }
+      - name: Windows settings storage regression
+        shell: pwsh
+        run: |
+          $output = & $env:GODOT_EXE --headless --path . --quit-after 240 res://tests/settings.tscn 2>&1
+          $output | Out-String | Write-Output
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          if ($output | Select-String -Pattern 'SCRIPT ERROR|Parse Error|Failed loading resource|FAIL:') { exit 1 }
+          if (-not ($output | Select-String -Pattern 'PASS: native settings versioned save reload validation')) { exit 1 }
+      - name: Windows Options UI regression
+        shell: pwsh
+        run: |
+          $output = & $env:GODOT_EXE --headless --path . --quit-after 240 res://tests/options_ui.tscn 2>&1
+          $output | Out-String | Write-Output
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          if ($output | Select-String -Pattern 'SCRIPT ERROR|Parse Error|Failed loading resource|FAIL:') { exit 1 }
+          if (-not ($output | Select-String -Pattern 'PASS: native options UI apply discard defaults')) { exit 1 }
