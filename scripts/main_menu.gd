@@ -1,5 +1,5 @@
 extends Control
-## Slice 0.1-A: actual Godot-native game-window menu, not a web wrapper.
+## Native game-window main menu, routed by the persistent AppRoot and SceneRouter.
 ## Incomplete gameplay destinations are visibly disabled until implemented.
 
 const BACKDROP_SCRIPT = preload("res://scripts/menu_backdrop.gd")
@@ -153,7 +153,8 @@ func _adapt_layout() -> void:
 
 
 func _show_status() -> void:
-    _status_label.text = "Slice A: native boot/menu. Next: scene architecture, RTS camera and controls."
+    _status_label.text = "Slice B: native navigation and state services."
+    EventBus.navigation_requested.emit(&"status")
 
 
 func _exit_game() -> void:

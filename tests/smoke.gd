@@ -1,5 +1,5 @@
 extends SceneTree
-## Run with: godot --headless --path . --script res://tests/smoke.gd
+## CI bootstrap smoke: the real main scene boots and navigates through an actual second screen.
 
 func _initialize() -> void:
     call_deferred("_run_smoke")
@@ -7,45 +7,51 @@ func _initialize() -> void:
 
 func _run_smoke() -> void:
     var startup_path: String = ProjectSettings.get_setting("application/run/main_scene", "")
-    if startup_path != "res://scenes/MainMenu.tscn":
+    if startup_path != "res://scenes/AppRoot.tscn":
         printerr("FAIL: unexpected main scene: " + startup_path)
         quit(1)
         return
 
     var scene := load(startup_path) as PackedScene
     if scene == null:
-        printerr("FAIL: main menu scene missing or unparsable")
+        printerr("FAIL: AppRoot scene missing")
         quit(1)
         return
 
     var root := scene.instantiate()
-    if not (root is Control):
-        printerr("FAIL: native main scene is not a Control")
+    get_root().add_child(root)
+    if SceneRouter.current_route() != &"menu":
+        printerr("FAIL: app root did not open main menu")
         quit(1)
         return
 
-    get_root().add_child(root)
-    var skirmish := root.find_child("SkirmishButton", true, false) as Button
-    var campaign := root.find_child("CampaignButton", true, false) as Button
-    var status := root.find_child("StatusButton", true, false) as Button
-    var exit_button := root.find_child("ExitButton", true, false) as Button
-
+    var menu := SceneRouter.current_screen()
+    var skirmish := menu.find_child("SkirmishButton", true, false) as Button
+    var campaign := menu.find_child("CampaignButton", true, false) as Button
+    var status := menu.find_child("StatusButton", true, false) as Button
+    var exit_button := menu.find_child("ExitButton", true, false) as Button
     if skirmish == null or campaign == null or status == null or exit_button == null:
         printerr("FAIL: main menu controls missing")
         quit(1)
         return
-    if not skirmish.disabled or not campaign.disabled:
-        printerr("FAIL: unfinished game modes must remain disabled")
+    if not skirmish.disabled or not campaign.disabled or status.disabled or exit_button.disabled:
+        printerr("FAIL: main menu disabled/active state incorrect")
         quit(1)
         return
-    if status.disabled or exit_button.disabled:
-        printerr("FAIL: active menu controls must be usable")
-        quit(1)
-        return
+
     status.pressed.emit()
-    var label := root.find_child("StatusLabel", true, false) as Label
-    if label == null or not label.text.contains("Slice A"):
-        printerr("FAIL: native status button did not update its text")
+    if SceneRouter.current_route() != &"status":
+        printerr("FAIL: status button failed to navigate")
+        quit(1)
+        return
+    var back := SceneRouter.current_screen().find_child("BackButton", true, false) as Button
+    if back == null or back.disabled:
+        printerr("FAIL: status back button missing")
+        quit(1)
+        return
+    back.pressed.emit()
+    if SceneRouter.current_route() != &"menu":
+        printerr("FAIL: back button failed to return")
         quit(1)
         return
 
