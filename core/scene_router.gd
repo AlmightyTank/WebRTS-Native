@@ -5,6 +5,9 @@ extends Node
 const SCENES: Dictionary = {
     &"menu": "res://scenes/MainMenu.tscn",
     &"status": "res://scenes/StatusScreen.tscn",
+    &"play": "res://scenes/PlayScreen.tscn",
+    &"options": "res://scenes/OptionsScreen.tscn",
+    &"credits": "res://scenes/CreditsScreen.tscn",
 }
 
 var _host: Control

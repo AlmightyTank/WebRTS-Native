@@ -43,6 +43,13 @@ jobs:
           godot --headless --path . --quit-after 180 res://tests/architecture.tscn 2>&1 | tee /tmp/godot-architecture.log
           grep -q "PASS: architecture navigation state lifecycle" /tmp/godot-architecture.log
           if grep -E "SCRIPT ERROR|Parse Error|Failed loading resource" /tmp/godot-architecture.log; then exit 1; fi
+      - name: Keyboard mouse and touch menu input
+        shell: bash
+        run: |
+          set -euo pipefail
+          godot --headless --path . --quit-after 240 res://tests/menu_input.tscn 2>&1 | tee /tmp/godot-menu-input.log
+          grep -q "PASS: native main menu keyboard mouse touch input" /tmp/godot-menu-input.log
+          if grep -E "SCRIPT ERROR|Parse Error|Failed loading resource|FAIL:" /tmp/godot-menu-input.log; then exit 1; fi
       - name: Normal game startup smoke
         shell: bash
         run: |
@@ -81,6 +88,14 @@ jobs:
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           if ($output | Select-String -Pattern 'SCRIPT ERROR|Parse Error|Failed loading resource') { exit 1 }
           if (-not ($output | Select-String -Pattern 'PASS: native Godot main menu boot')) { exit 1 }
+      - name: Windows mouse keyboard and touch menu input
+        shell: pwsh
+        run: |
+          $output = & $env:GODOT_EXE --headless --path . --quit-after 240 res://tests/menu_input.tscn 2>&1
+          $output | Out-String | Write-Output
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          if ($output | Select-String -Pattern 'SCRIPT ERROR|Parse Error|Failed loading resource|FAIL:') { exit 1 }
+          if (-not ($output | Select-String -Pattern 'PASS: native main menu keyboard mouse touch input')) { exit 1 }
       - name: Windows architecture lifecycle tests
         shell: pwsh
         run: |

@@ -9,7 +9,7 @@
 1. Install Godot 4.7.2 and clone this repository.
 2. Open `project.godot` in the Godot editor.
 3. Press **F5** to launch the game window.
-4. Click **DEVELOPMENT STATUS** to navigate to the second screen, then **BACK TO MAIN MENU**. Gameplay options are deliberately disabled.
+4. Navigate with mouse, Tab/Shift+Tab and Enter, or touch. Play opens a mode selector; Options, Credits, and Development Status have working Back buttons. Campaign, Skirmish, and Load are deliberately disabled until implemented.
 
 ## Headless validation
 ```sh
