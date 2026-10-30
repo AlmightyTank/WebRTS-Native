@@ -1,4 +1,4 @@
-extends SceneTree
+extends Node
 ## Headless regression: route history, signals, state transitions and root disposal.
 
 var _failures: int = 0
@@ -6,7 +6,7 @@ var _routes_seen: Array[StringName] = []
 var _phases_seen: Array[StringName] = []
 
 
-func _initialize() -> void:
+func _ready() -> void:
     call_deferred("_run_tests")
 
 
@@ -41,10 +41,10 @@ func _run_tests() -> void:
     var main_scene := load("res://scenes/AppRoot.tscn") as PackedScene
     _check(main_scene != null, "AppRoot is a valid packed scene")
     if main_scene == null:
-        quit(1)
+        get_tree().quit(1)
         return
     var root := main_scene.instantiate()
-    get_root().add_child(root)
+    get_tree().root.add_child(root)
 
     _check(SceneRouter.current_route() == &"menu", "attach opens main menu")
     _check(SceneRouter.get_history().size() == 1, "initial stack has one route")
@@ -81,7 +81,7 @@ func _run_tests() -> void:
 
     root.queue_free()
     # Process pending frees and exit notifications before checking detached state.
-    await process_frame
+    await get_tree().process_frame
     await process_frame
     _check(SceneRouter.current_route() == &"", "disposed AppRoot clears route history")
     _check(SceneRouter.current_screen() == null, "disposed AppRoot clears screen pointer")
@@ -95,7 +95,7 @@ func _run_tests() -> void:
 
     if _failures == 0:
         print("PASS: architecture navigation state lifecycle")
-        quit(0)
+        get_tree().quit(0)
     else:
         printerr("FAIL: architecture had %d failures" % _failures)
         quit(1)

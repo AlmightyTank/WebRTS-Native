@@ -1,7 +1,7 @@
-extends SceneTree
+extends Node
 ## CI bootstrap smoke: the real main scene boots and navigates through an actual second screen.
 
-func _initialize() -> void:
+func _ready() -> void:
     call_deferred("_run_smoke")
 
 
@@ -9,7 +9,7 @@ func _run_smoke() -> void:
     var startup_path: String = ProjectSettings.get_setting("application/run/main_scene", "")
     if startup_path != "res://scenes/AppRoot.tscn":
         printerr("FAIL: unexpected main scene: " + startup_path)
-        quit(1)
+        get_tree().quit(1)
         return
 
     var scene := load(startup_path) as PackedScene
@@ -19,7 +19,7 @@ func _run_smoke() -> void:
         return
 
     var root := scene.instantiate()
-    get_root().add_child(root)
+    get_tree().root.add_child(root)
     if SceneRouter.current_route() != &"menu":
         printerr("FAIL: app root did not open main menu")
         quit(1)
@@ -56,4 +56,4 @@ func _run_smoke() -> void:
         return
 
     print("PASS: native Godot main menu boot and interaction smoke")
-    quit(0)
+    get_tree().quit(0)

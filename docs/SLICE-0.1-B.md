@@ -28,3 +28,6 @@
 - Session lifecycle transitions, invalid phase rules and snapshot isolation.
 
 **Status:** Implementation pushed for review. Do not check off final gates until current CI and Windows UI acceptance succeed.
+
+### CI test runner note
+The regression suites run via `tests/*.tscn` scenes (not `--script` standalone SceneTree scripts), so engine autoloads initialize as they do during actual gameplay. Both Windows and Linux workflows explicitly verify PASS markers and reject Godot script/parse errors.

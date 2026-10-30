@@ -31,8 +31,8 @@ AppRoot (Control, never replaced during normal navigation)
 ## Testing
 ```sh
 godot --headless --editor --path . --import --quit
-godot --headless --path . --script res://tests/smoke.gd
-godot --headless --path . --script res://tests/architecture.gd
+godot --headless --path . res://tests/smoke.tscn
+godot --headless --path . res://tests/architecture.tscn
 godot --headless --path . --quit-after 10
 ```
 Linux and Windows GitHub CI both run the navigation/state tests. Human-visible UI on Windows and Android is still separate acceptance work.
