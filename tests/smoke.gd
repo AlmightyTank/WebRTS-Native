@@ -15,14 +15,14 @@ func _run_smoke() -> void:
     var scene := load(startup_path) as PackedScene
     if scene == null:
         printerr("FAIL: AppRoot scene missing")
-        quit(1)
+        get_tree().quit(1)
         return
 
     var root := scene.instantiate()
     get_tree().root.add_child(root)
     if SceneRouter.current_route() != &"menu":
         printerr("FAIL: app root did not open main menu")
-        quit(1)
+        get_tree().quit(1)
         return
 
     var menu := SceneRouter.current_screen()
@@ -32,27 +32,27 @@ func _run_smoke() -> void:
     var exit_button := menu.find_child("ExitButton", true, false) as Button
     if skirmish == null or campaign == null or status == null or exit_button == null:
         printerr("FAIL: main menu controls missing")
-        quit(1)
+        get_tree().quit(1)
         return
     if not skirmish.disabled or not campaign.disabled or status.disabled or exit_button.disabled:
         printerr("FAIL: main menu disabled/active state incorrect")
-        quit(1)
+        get_tree().quit(1)
         return
 
     status.pressed.emit()
     if SceneRouter.current_route() != &"status":
         printerr("FAIL: status button failed to navigate")
-        quit(1)
+        get_tree().quit(1)
         return
     var back := SceneRouter.current_screen().find_child("BackButton", true, false) as Button
     if back == null or back.disabled:
         printerr("FAIL: status back button missing")
-        quit(1)
+        get_tree().quit(1)
         return
     back.pressed.emit()
     if SceneRouter.current_route() != &"menu":
         printerr("FAIL: back button failed to return")
-        quit(1)
+        get_tree().quit(1)
         return
 
     print("PASS: native Godot main menu boot and interaction smoke")
