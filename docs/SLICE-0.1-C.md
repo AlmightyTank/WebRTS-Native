@@ -14,7 +14,7 @@ All main menu destinations must be visible. Incomplete gameplay should never be 
 - [x] Mouse/touch-friendly minimum 51px tall menu buttons and vertically scrollable narrow/short viewport layout.
 - [x] Native menu smoke test expanded for destination and locked-state coverage.
 - [x] Viewport-injected mouse, keyboard and Godot touch-to-mouse emulation proxy test suite added to Linux/Windows CI. A synthetic emulation-device mouse event exercises the touch-to-mouse GUI path; **actual touch delivery must still be tested on Android hardware**.
-- [ ] Linux and Windows latest CI run both passed.
+- [x] Linux and Windows latest CI run both passed ([run 40999997684](https://github.com/AlmightyTank/WebRTS-Native/actions/runs/40999997684): project import, menu smoke, state lifecycle, keyboard/mouse/touch-emulation GUI input).
 - [ ] Real Windows and Android/touch hardware inspection completed.
 - [ ] Slice C merged into main after final acceptance.
 
