@@ -82,7 +82,7 @@ func _build_menu() -> void:
     _add_locked_button(content, "LoadButton", "LOAD GAME  •  COMING SOON",
         "Local saved games will become available once the gameplay and persistence systems exist.")
     _add_route_button(content, "OptionsButton", "OPTIONS", &"options",
-        "Open the options overview. Saving settings arrives in Slice D.")
+        "Configure locally saved display, sound, graphics and UI preferences.")
     _add_route_button(content, "CreditsButton", "CREDITS", &"credits",
         "View the project's development and technology credits.")
     _add_route_button(content, "StatusButton", "DEVELOPMENT STATUS", &"status",
