@@ -42,3 +42,32 @@ jobs:
           set -euo pipefail
           godot --headless --path . --quit-after 10 2>&1 | tee /tmp/godot-boot.log
           if grep -E "SCRIPT ERROR|Parse Error|Failed loading resource" /tmp/godot-boot.log; then exit 1; fi
+
+  windows-smoke:
+    name: Windows editor startup and menu smoke
+    runs-on: windows-2022
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install pinned Windows Godot 4.7.2
+        shell: pwsh
+        run: |
+          $ProgressPreference = 'SilentlyContinue'
+          $archive = Join-Path $env:RUNNER_TEMP 'godot.zip'
+          $destination = Join-Path $env:RUNNER_TEMP 'godot'
+          Invoke-WebRequest -Uri 'https://github.com/godotengine/godot/releases/download/4.7.2-stable/Godot_v4.7.2-stable_win64.exe.zip' -OutFile $archive
+          Expand-Archive -Path $archive -DestinationPath $destination -Force
+          $engine = Get-ChildItem -Path $destination -Filter '*win64.exe' -File | Select-Object -First 1
+          if (-not $engine) { throw 'Godot 4.7.2 Windows executable missing' }
+          "GODOT_EXE=$($engine.FullName)" | Out-File -FilePath $env:GITHUB_ENV -Append
+          & $engine.FullName --version
+      - name: Native project import
+        shell: pwsh
+        run: |
+          & $env:GODOT_EXE --headless --editor --path . --import --quit
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Windows scene and interaction smoke
+        shell: pwsh
+        run: |
+          & $env:GODOT_EXE --headless --path . --script res://tests/smoke.gd
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
