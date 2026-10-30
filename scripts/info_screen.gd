@@ -22,8 +22,6 @@ func _ready() -> void:
     for side in ["left", "right", "top", "bottom"]:
         margin.add_theme_constant_override("margin_" + side, 12)
 
-    var center := CenterContainer.new()
-    margin.add_child(center)
 
     var scroll := ScrollContainer.new()
     scroll.name = "ContentScroller"
@@ -32,10 +30,11 @@ func _ready() -> void:
     scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
     scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
     scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-    center.add_child(scroll)
+    margin.add_child(scroll)
 
     var panel := PanelContainer.new()
     panel.custom_minimum_size.x = 320.0
+    panel.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
     scroll.add_child(panel)
 
     var inset := MarginContainer.new()
@@ -83,7 +82,7 @@ func _ready() -> void:
     back.focus_mode = Control.FOCUS_ALL
     back.pressed.connect(_on_back)
     box.add_child(back)
-    back.grab_focus.call_deferred()
+    back.grab_focus()
 
 
 func _add_disabled(box: VBoxContainer, node_name: String, title: String) -> void:

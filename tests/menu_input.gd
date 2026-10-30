@@ -23,6 +23,9 @@ func _button(name: String) -> Button:
 
 
 func _click_mouse(target: Button) -> void:
+    if target == null:
+        _check(false, "mouse target exists")
+        return
     var pos: Vector2 = target.get_global_rect().get_center()
     for down in [true, false]:
         var event := InputEventMouseButton.new()
@@ -34,13 +37,16 @@ func _click_mouse(target: Button) -> void:
 
 
 func _tap_touch(target: Button) -> void:
+    if target == null:
+        _check(false, "touch target exists")
+        return
     var pos: Vector2 = target.get_global_rect().get_center()
     for down in [true, false]:
         var event := InputEventScreenTouch.new()
         event.index = 0
         event.position = pos
         event.pressed = down
-        get_viewport().push_input(event, true)
+        Input.parse_input_event(event)
 
 
 func _key(code: Key) -> void:
@@ -91,15 +97,21 @@ func _run() -> void:
     _click_mouse(options)
     await get_tree().process_frame
     _check(SceneRouter.current_route() == &"options", "mouse click opens Options")
-    _click_mouse(_button("BackButton"))
+    var back_options := _button("BackButton")
+    if back_options != null:
+        print("DEBUG: Options back rect=", back_options.get_global_rect(), " viewport=", get_viewport().get_visible_rect())
+    _click_mouse(back_options)
+    await get_tree().process_frame
     await get_tree().process_frame
     _check(SceneRouter.current_route() == &"menu", "mouse click Back returns from Options")
 
     var credits := _button("CreditsButton")
     _tap_touch(credits)
     await get_tree().process_frame
+    await get_tree().process_frame
     _check(SceneRouter.current_route() == &"credits", "screen touch opens Credits")
     _tap_touch(_button("BackButton"))
+    await get_tree().process_frame
     await get_tree().process_frame
     _check(SceneRouter.current_route() == &"menu", "screen touch returns from Credits")
 

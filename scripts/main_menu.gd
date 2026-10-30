@@ -21,7 +21,7 @@ func _ready() -> void:
     # Explicit initial focus permits keyboard-only activation without a mouse.
     var first := find_child("PlayButton", true, false) as Button
     if first != null:
-        first.grab_focus.call_deferred()
+        first.grab_focus()
 
 
 func _build_menu() -> void:
