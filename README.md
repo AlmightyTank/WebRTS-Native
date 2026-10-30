@@ -18,6 +18,7 @@ To run local foundation smoke checks from a command shell with `godot` installed
 godot --headless --editor --path . --import --quit
 godot --headless --path . res://tests/smoke.tscn
 godot --headless --path . res://tests/architecture.tscn
+godot --headless --path . res://tests/menu_input.tscn
 godot --headless --path . --quit-after 10
 ```
 

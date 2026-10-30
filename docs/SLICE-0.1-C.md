@@ -13,7 +13,7 @@ All main menu destinations must be visible. Incomplete gameplay should never be 
 - [x] Keyboard focus, Tab/Shift+Tab/Enter and Escape back navigation integrated with native controls.
 - [x] Mouse/touch-friendly minimum 51px tall menu buttons and vertically scrollable narrow/short viewport layout.
 - [x] Native menu smoke test expanded for destination and locked-state coverage.
-- [x] Input test suite added and included in Linux and Windows CI.
+- [x] Viewport-injected mouse, keyboard and screen touch input test suite added to Linux/Windows CI. Real-device taps still require physical acceptance.
 - [ ] Linux and Windows latest CI run both passed.
 - [ ] Real Windows and Android/touch hardware inspection completed.
 - [ ] Slice C merged into main after final acceptance.
