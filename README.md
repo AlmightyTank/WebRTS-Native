@@ -2,7 +2,7 @@
 
 An original **standalone, offline-first real-time strategy game** for Windows and Android, built with **Godot 4.7.2** and GDScript. Its target is an angled low-poly 3D battlefield, native menus and an integrated RTS HUD.
 
-> **Current branch:** v0.1 Slice B architecture. The main menu is functional, but Campaign and Skirmish are intentionally disabled until gameplay exists. No combat or mission content is claimed complete.
+> **Current branch:** v0.1 Slice C complete main-menu navigation. The main menu is functional, but Campaign and Skirmish are intentionally disabled until gameplay exists. No combat or mission content is claimed complete.
 
 This is the NEW native game. The original [Phaser WebRTS prototype](https://github.com/AlmightyTank/WebRTS) is a separate, unchanged reference.
 
@@ -10,7 +10,7 @@ This is the NEW native game. The original [Phaser WebRTS prototype](https://gith
 
 1. Install [Godot 4.7.2 standard edition](https://godotengine.org/download/archive/4.7.2-stable/).
 2. Clone this repository; open the root `project.godot` in Godot.
-3. Press **F5** to launch the standalone game window, with no browser or server. The Development Status button opens a separate native screen and Back returns to the main menu.
+3. Press **F5** to launch the standalone game window, with no browser or server. The native menu has Play (offline mode selector), Campaign, Skirmish, Load, Options, Credits, Development Status, and Quit. Only the Play selector, Options overview, Credits, Status, and Quit are active until real gameplay exists.
 
 To run local foundation smoke checks from a command shell with `godot` installed:
 

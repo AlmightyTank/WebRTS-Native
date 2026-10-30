@@ -28,13 +28,17 @@ func _run_smoke() -> void:
     var menu := SceneRouter.current_screen()
     var skirmish := menu.find_child("SkirmishButton", true, false) as Button
     var campaign := menu.find_child("CampaignButton", true, false) as Button
+    var play := menu.find_child("PlayButton", true, false) as Button
+    var load_button := menu.find_child("LoadButton", true, false) as Button
+    var options := menu.find_child("OptionsButton", true, false) as Button
+    var credits := menu.find_child("CreditsButton", true, false) as Button
     var status := menu.find_child("StatusButton", true, false) as Button
     var exit_button := menu.find_child("ExitButton", true, false) as Button
-    if skirmish == null or campaign == null or status == null or exit_button == null:
+    if skirmish == null or campaign == null or load_button == null or play == null or options == null or credits == null or status == null or exit_button == null:
         printerr("FAIL: main menu controls missing")
         get_tree().quit(1)
         return
-    if not skirmish.disabled or not campaign.disabled or status.disabled or exit_button.disabled:
+    if not skirmish.disabled or not campaign.disabled or not load_button.disabled or play.disabled or options.disabled or credits.disabled or status.disabled or exit_button.disabled:
         printerr("FAIL: main menu disabled/active state incorrect")
         get_tree().quit(1)
         return
