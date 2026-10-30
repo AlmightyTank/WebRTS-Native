@@ -98,7 +98,7 @@ func _run_tests() -> void:
         get_tree().quit(0)
     else:
         printerr("FAIL: architecture had %d failures" % _failures)
-        quit(1)
+        get_tree().quit(1)
 
 
 func _record_route(route: StringName, _depth: int) -> void:
